@@ -220,6 +220,43 @@ class Validator {
             if (isset($this->data[$field]) && !DateTime::createFromFormat($ruleValue, $this->data[$field])) {
                 $this->addError($field, 'Invalid date format.');
             }
+        }elseif ($ruleName === 'phone_number') { // New rule for phone number
+            /* Phone Number: Validates that a field's value is a valid phone number. */
+            if (isset($this->data[$field])) {
+                $phoneNumber = $this->data[$field];
+                // Define a regular expression pattern for a valid phone number
+                $pattern = '/^(?:\+?\d{1,3}[-.●]?)?\(?(?:\d{2,3})?\)?[-.●]?\d{3,4}[-.●]?\d{4}$/';
+
+                if (!preg_match($pattern, $phoneNumber)) {
+                    $this->addError($field, 'Invalid phone number format.');
+                }
+            }
+        }elseif ($ruleName === 'birthday') {
+            /* Birthday: Validates that a field's value is a valid date of birth, in the past, and the person is at least the specified age. */
+            if (isset($this->data[$field])) {
+                $birthday = $this->data[$field];
+
+                // Check if the birthday is a valid date
+                if (!strtotime($birthday)) {
+                    $this->addError($field, 'Invalid date format for birthday.');
+                } else {
+                    // Calculate age based on the provided birthday
+                    $birthdate = new DateTime($birthday);
+                    $currentDate = new DateTime();
+                    $age = $currentDate->diff($birthdate)->y;
+
+                    // Check if the birthday is in the past
+                    if ($birthdate > $currentDate) {
+                        $this->addError($field, 'Birthday must be in the past.');
+                    }
+
+                    // Check if the age is less than the required minimum age
+                    $requiredAge = isset($ruleValue) ? intval($ruleValue) : 18;
+                    if ($age < $requiredAge) {
+                        $this->addError($field, "Must be at least $requiredAge years old.");
+                    }
+                }
+            }
         }
 
         // Add more rule implementations here

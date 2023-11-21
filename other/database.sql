@@ -18,7 +18,7 @@ CREATE TABLE `users`
     `last_name`           VARCHAR(255)                                                                  NOT NULL,
     `birthday`            DATE                                                                          NOT NULL,
     `address`             VARCHAR(255)                                                                  NOT NULL,
-    `phone`               VARCHAR(20)                                                                   NOT NULL UNIQUE,
+    `phone`               VARCHAR(20)                                                                   NOT NULL,
     `role`                ENUM ('super_administrator', 'administrator', 'employer', 'user', 'employee') NOT NULL,
     `confirmation_status` ENUM ('not_confirmed', 'confirmed')                                           NOT NULL DEFAULT 'not_confirmed',
     `available_status`    ENUM ('active', 'inactive', 'deleted')                                        NOT NULL DEFAULT 'active',

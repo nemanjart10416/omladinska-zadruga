@@ -1,1 +1,1 @@
-Click the following link to confirm your account: https://127.0.0.1/omladinska-zadruga/email_confirm?token=e1e897f8176ce11c5ab0afeb8212280c6b9378f6cc11667080bdaca2d8d780b5
+Click the following link to confirm your account: https://127.0.0.1/omladinska-zadruga/email_confirm?token=d256d7015bd4d4ee612f2aa3907b2068d4bc034c753273320b2871d65e7de251

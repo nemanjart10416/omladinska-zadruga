@@ -19,6 +19,9 @@ if (isset($_POST["register"])) {
     $phone = UserInput::sanitize($_POST["phone"]);
     $role = UserInput::sanitize($_POST["role"]);
 
+    // Remove spaces from the phone number
+    $phone = str_replace(' ', '', $phone);
+
     // Validate inputs (you can add more validation logic here)
     if (empty($username) || empty($email) || empty($password) || empty($firstName) || empty($lastName) || empty($birthday) || empty($address) || empty($phone) || empty($role)) {
         $msg = Message::danger("All fields are required.");
@@ -43,15 +46,15 @@ if (isset($_POST["register"])) {
             ];
 
             $rules = [
-                'username' => 'required|min:5|max:20',
-                'email' => 'required|min:5|max:90|email',
-                'password' => 'required|min:8|max:50',
-                'name' => 'required|min:3|max:50',
-                'last name' => 'required|min:3|max:50',
-                'birthday' => 'required|date',
-                'address' => 'required|min:3|max:50',
-                'phone' => 'required',
-                'role' => 'required|in:employer,user'
+                'username' => 'required|min:5|max:20|alpha_numeric', // username only numbers and letters, min 5 max 20, unique
+                'email' => 'required|min:5|max:90|email', // email min 5, max 90, email
+                'password' => 'required|min:8|max:50', // password min 8 max 50
+                'name' => 'required|min:3|max:50|alpha', // name min 3, max 50, only letters
+                'last name' => 'required|min:3|max:50|alpha', // last name min 3, max 50, only letters
+                'birthday' => 'required|date|birthday:18', // birthday, must be date, in the past, at least 18 years old
+                'address' => 'required|min:3|max:50', // address min 3, max 50
+                'phone' => 'required|phone_number|min:6|max:15', // phone number, min 6, max 15, phone number format
+                'role' => 'required|in:employer,user' // role, employer or user
             ];
 
             $validator = new Validator($data, $rules);
@@ -66,14 +69,18 @@ if (isset($_POST["register"])) {
                 );
 
                 try {
-                    $new_user = $user->createUser();
+                    if(isset($_POST["test"])){
+                        $msg = Message::success("Registration would be success if not testing.");
+                    }else{
+                        $new_user = $user->createUser();
 
-                    $msg = Message::success("Registration is success, please confirm email address.");
-                    // Redirect to login page after successful registration
-                    // header("Location: login.php");
-                    // exit();
+                        $msg = Message::success("Registration is success, please confirm email address.");
+                        // Redirect to login page after successful registration
+                        // header("Location: login.php");
+                        // exit();
+                    }
                 } catch (Exception $e) {
-                    $msg = Message::danger("Registration failed. Please try again later.");
+                    $msg = Message::danger("Registration failed. Please try again later. ".$e);
                 }
 
             } else {
@@ -90,7 +97,6 @@ if (isset($_POST["register"])) {
         }
     }
 }
-?>
 ?>
 
 <!doctype html>
@@ -177,6 +183,10 @@ if (isset($_POST["register"])) {
                         <option value="employer">employer - I want to post jobs</option>
                     </select>
                 </div>
+                <div class="mb-3">
+                    <input type="checkbox" name="test"> Do not create account, this is testing
+                </div>
+
                 <button type="submit" class="btn btn-primary" name="register">Register</button>
             </form>
         </div>
