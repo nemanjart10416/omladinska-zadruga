@@ -1,0 +1,96 @@
+file upload:
+    https://docs.php.earth/security/uploading/
+
+-when testing try:
+    -adding two fields of same name but different value
+    -try changing every parameter and see what happens
+    -check all api endpoints
+    -use buirp target to see all hystory and routes
+    -try OPTIONS http method
+        OPTIONS /api/Products/ HTTP/1.1
+        => ... Access-Control-Allow-Methods: GET,HEAD,PUT,PATCH,POST,DELETE ...
+    -always try to add Content-Type
+
+ideas:
+    admin panel:
+        -give admin folder some not easy guessable name
+        -hide link from everione exept admin
+        -different js for admin and user
+
+interesting stuff about JWT:
+    https://www.youtube.com/watch?v=aGjLR4uc0ys
+
+Robots.txt file found
+
+WAF
+
+Privacy Policy was not found on the website or is not easily accessible.
+
+Third-party cookies or cookies with tracking information are sent, but no cookie disclaimer was found on the website.
+
+Server software and technology found
+Risk description:
+    An attacker could use this information to mount specific attacks against the identified software type and version.
+Recommendation:
+    We recommend you to eliminate the information which permits the identification of software platform, technology,
+    server and operating system: HTTP server headers, HTML meta information, etc.
+
+
+
+
+
+
+
+
+
+
+
+
+Constructor Parameter Types:
+
+When the User object is created, it might be a good idea to make some parameters nullable in the constructor, like $id and $createdAt.
+This would allow you to create a new user without specifying these values, especially when creating a new user where the database might assign the ID and the timestamps.
+
+
+The methods in your User class are mostly static. While this can be acceptable, consider whether it might make sense to have some of them as
+instance methods (non-static), especially when dealing with a specific user instance (e.g., deleting a user).
+
+
+
+
+Session Hijacking:
+
+If an attacker somehow gains access to a user's session ID, they could potentially impersonate that user. This is known as session hijacking.
+To mitigate this risk, it's crucial to use secure practices for session management, such as using HTTPS to encrypt data in transit and regenerating session IDs after a user logs in.
+Session Fixation:
+
+Session fixation is an attack where an attacker sets a user's session ID to a known value. If the application does not regenerate the session ID upon login,
+an attacker could force a user to use a session with a known ID. This can be mitigated by regenerating the session ID upon login.
+Sensitive Information:
+
+While session data itself is stored securely on the server, it's good practice not to store overly sensitive information in the session. If an attacker gains access
+to the server's file system, they might be able to access session data. Therefore, it's advisable to keep only essential information in the session and store more
+sensitive data in a secure database.
+Secure Configuration:
+
+Ensure that your server and PHP configuration are secure. This includes using secure session storage, protecting against session fixation, and regularly
+reviewing and updating security configurations.
+
+
+
+
+Logging: Consider adding logging statements or a logging mechanism to record events, errors, or any critical actions taken by the TokenManager.
+This can be useful for debugging and monitoring.
+
+
+
+
+
+
+
+
+
+
+
+
+

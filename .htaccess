@@ -1,0 +1,184 @@
+RewriteEngine On
+## non-www to www
+#RewriteCond %{HTTP_HOST} !^www\. [NC]
+#RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+## HTTP to HTTPS
+# Check if X-Forwarded-Proto header is not "https"
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+# Check if HTTPS is off
+RewriteCond %{HTTPS} off
+# If both conditions are met, redirect to HTTPS version
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+## Redirect URLs with .php extension to URLs without the extension
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]
+RewriteRule ^ %1 [R=301,L]
+
+## redirect old url to new url
+#  RewriteRule ^old-url$ new-url [R=301,L]
+
+## manage php extensions for server when accessing without
+# Check if the requested file is not a directory
+RewriteCond %{REQUEST_FILENAME} !-d
+# Check if the requested file with ".php" extension exists
+RewriteCond %{REQUEST_FILENAME}\.php -f
+# If both conditions are met, internally rewrite the URL
+# by appending ".php" to the end and stop further processing
+RewriteRule ^(.*)$ $1.php [NC,L]
+
+## Gzip compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE image/x-icon
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/x-font
+    AddOutputFilterByType DEFLATE application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE application/x-font-otf
+    AddOutputFilterByType DEFLATE application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/opentype
+    # For Olders Browsers Which Can't Handle Compression
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+## remove "index.php" from URLs and perform a 301 (permanent) redirect
+# Check if the HTTP request contains "index" in a GET request
+RewriteCond %{THE_REQUEST} ^GET.*index [NC]
+# Redirect URLs containing "index.php" to URLs without it
+RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=301,NE,L]
+
+## define custom error pages for specific HTTP error codes
+ErrorDocument 400 /template/assets/php/error/bad-request.php
+ErrorDocument 404 /template/assets/php/error/not-found.php
+ErrorDocument 403 /template/assets/php/error/403.php
+
+## set caching headers for specific types of files
+<filesMatch ".(ico|jpg|jpeg|png|gif|woff2|css|js|min.css|min.js|webp|svg)$">
+    Header set Cache-Control "max-age=31536000, public"
+</filesMatch>
+
+## HTTP Strict Transport Security (HSTS) header
+<IfModule mod_headers.c>
+    # The header instructs browsers to enforce secure connections by only allowing the site to be accessed over HTTPS for the specified duration
+    # max-age=16070400 => duration in seconds that the browser should remember to enforce HTTPS, approximately six months in this case
+    # includeSubDomains => Indicates that the HSTS policy should apply to all subdomains of the current domain as well
+    # preload => Indicates that the domain should be included in browser preload lists, used by browsers to ensure HSTS is applied even for a user's first visi
+    # env=HTTPS => ensures that the header is only added for requests that are made over HTTPS
+    Header set Strict-Transport-Security "max-age=16070400; includeSubDomains; preload" env=HTTPS
+    ## HTTP Strict Transport Security (HSTS)
+    #  web security policy that instructs web browsers to only connect to a website over a secure and encrypted connection, specifically HTTPS
+    #  works by adding a special HTTP header to the website's responses, telling the browser that it should access the site only via HTTPS for a specified period of time
+    #  improves website security by forcing all communications to use the secure HTTPS protocol, reducing the risk of various types of attacks and protecting user data
+</IfModule>
+
+## Content Security Policy (CSP)
+<IfModule mod_headers.c>
+    Header set Content-Security-Policy "default-src 'self';script-src 'self';img-src 'self';frame-ancestors 'none';"
+</IfModule>
+
+## Referrer-Policy
+#  controls how much information about the referring URL (referrer) is included when making requests to a different website
+#
+# referrer information will be sent when navigating within the same origin (same website), but it will not be sent when navigating to a different origin.
+Header always set Referrer-Policy "same-origin"
+#Header always set Referrer-Policy "no-referrer" #TODO
+
+#permissions policy
+Header set Permissions-Policy "fullscreen=(self), geolocation=(self), camera=()"
+
+## X-Content-Type-Options
+#  security feature that helps prevent browsers from interpreting files in ways that might be unintended
+<IfModule mod_headers.c>
+    # sets the X-Content-Type-Options header to "nosniff"
+    # instructs the browser not to infer the MIME type of a file based on its content and to only use the provided Content-Type header
+    # helps prevent certain types of attacks, like MIME type sniffing, which could lead to security vulnerabilities
+    Header set X-Content-Type-Options nosniff
+</IfModule>
+
+## X-Frame-Options
+#  helps control whether a web page can be displayed within an iframe or frame on another website
+#
+# "SAMEORIGIN" web page can only be displayed in an iframe or frame on a page from the same origin
+# prevents the page from being loaded within frames on other domains, which helps protect against clickjacking attacks
+Header set X-Frame-Options "SAMEORIGIN"
+
+## X-XSS-Protection
+#  security feature that helps prevent cross-site scripting (XSS) attacks by instructing the browser to block the rendering of a page if an XSS attack is detected
+<IfModule mod_headers.c>
+    # instructs the browser to enable the built-in XSS protection mechanisms. If a potential XSS attack is detected, the browser will block the rendering of the page
+	Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+## Access-Control-Allow-Origin
+#  control which domains are allowed to make cross-origin requests to your server
+#  Cross-origin requests are typically restricted by browsers to prevent potential security vulnerabilities
+<IfModule mod_headers.c>
+    # Allow requests from a specific origin (e.g., https://www.example.com)
+    #Header set Access-Control-Allow-Origin "https://www.example.com"
+
+    # Allow requests from any origin (not recommended for production)
+    #Header set Access-Control-Allow-Origin "*"
+
+    # Allow requests from multiple origins
+    #Header set Access-Control-Allow-Origin "https://www.example.com https://subdomain.example.com"
+
+    # Allow requests with credentials (cookies, HTTP authentication)
+    #Header set Access-Control-Allow-Origin "https://www.example.com"
+    #Header set Access-Control-Allow-Credentials "true"
+
+    # Specify allowed headers and methods
+    #Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept"
+    #Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE"
+</IfModule>
+
+## adds a trailing slash to URLs that don't have one
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_URI} /+[^\.]+$
+    RewriteRule ^(.+[^/])$ %{REQUEST_URI}/ [R=301,L]
+</IfModule>
+
+## Blocking Access to Sensitive Files
+## Prevent Directory Listing
+Options -Indexes
+
+## Deny Access to Specific Files
+<Files "TODO.txt">
+    Deny from all
+</Files>
+
+
+## default files to be served when a directory is accessed without specifying a file name
+#DirectoryIndex index.php index.html index.htm
+
+## IP whitelisting or blacklisting
+# Allow access only to whitelisted IPs
+#Order deny,allow
+#Deny from all
+#Allow from 1.2.3.4
+#Allow from 5.6.7.8
+
+# Block access from blacklisted IPs
+#Order allow,deny
+#Allow from all
+#Deny from 9.10.11.12
+#Deny from 13.14.15.16
+
+
+
+
+

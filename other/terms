@@ -1,0 +1,103 @@
+origin:
+    -two urls have same origin if their protocol, host and ports are the same
+        -paths does not matter
+        protocol://host:port/paths
+
+content security policy(CSP):
+    -browser security mechanism that aims to mitigate XSS and some other attacks
+    -works by restricting the resources (such as scripts and images) that a page can load
+    -restricting whether a page can be framed by other pages
+    -response needs to include an HTTP response header called Content-Security-Policy
+    -Mitigating XSS:
+        script-src 'self' - only allow scripts to be loaded from the same origin as the page
+        script-src https://scripts.normal-website.com - allow scripts to be loaded from a specific domain
+    -many CSPs do allow image requests
+    -you can often use img elements to make requests to external servers in order to disclose CSRF tokens
+
+    Mitigating dangling markup attacks:
+        img-src 'self' - allow images to be loaded from the same origin as the page itself
+        img-src https://images.normal-website.com - only allow images to be loaded from a specific domain
+
+    Protecting against clickjacking:
+        frame-ancestors 'self' - only allow the page to be framed by other pages from the same origin
+        frame-ancestors 'none' - prevent framing altogether
+        frame-ancestors 'self' https://normal-website.com https://*.robust-website.com
+        -CSP also validates each frame in the parent frame hierarchy, whereas X-Frame-Options only validates the top-level frame
+
+same origin policy(SOP):
+    -browser security mechanism
+    -browser enforces same origin policy
+    -prevent accessing private data and resources cross origin
+        -web browser restricts another webpage script and data from accessing their data and information
+        -prevents one website from running javascript to read data from another website
+        -Without the same-origin policy, if you visited a malicious website, it would be able to read your emails from GMail, private messages from Facebook, etc
+         -same-origin policy generally controls the access that JavaScript code has to content that is loaded cross-domain
+
+    -can load images, css, scripts from different origin
+
+    -it will allow requests to be sent, but it will block responses
+        -result reading is prevented by SOP
+
+    -if SOP is to allow origin A to communicate with origin B, origin B must whitelist origin A
+
+Cross-Origin Resource Sharing(CORS):
+    -allows you to make requests from one website to another website in the browser
+        -normally prohibited by another browser policy(SOP)
+    -allows servers to specify certain trusted ‘origins’ they are willing to permit requests from
+    -Origins are defined as the combination of protocol (http or https), host (a domain like www.example.com or an IP address) and port
+    -Browsers which implement the CORS policy will include a HTTP header called ‘Origin’ in requests made with AJAX, including above information the value
+
+    Access-Control-Allow-Origin header:
+        -included in the response from one website to a request originating from another website
+        -identifies the permitted origin of the request
+        -web browser compares the Access-Control-Allow-Origin with the requesting website's origin and permits access to the response if they match
+
+    -instruct the browser to expose server responses to a HTTP requests from certain origin
+        Access-Control-Allow-Origin: <origin>
+
+    -instruct the browser to expose server responses to a HTTP requests from all origins
+        Access-Control-Allow-Origin: *
+
+    -requests with credentials:
+        -default behavior of cross-origin resource requests is for requests to be passed without credentials like cookies and the Authorization header
+        -cross-domain server can permit reading of the response when credentials are passed to it
+
+        Access-Control-Allow-Credentials
+            -header tells browsers whether to expose the response to the frontend JavaScript code when the request's credentials mode
+            -When a request's credentials mode (Request.credentials) is include
+                -browsers will only expose the response to the frontend JavaScript code if the Access-Control-Allow-Credentials value is true
+                -Credentials are cookies, authorization headers, or TLS client certificates
+                -if a request is made for a resource with credentials and if this header is not returned with the resource
+                    -response is ignored by the browser and not returned to the web content
+
+                    -request
+                        GET /data HTTP/1.1
+                        Host: robust-website.com
+                        ...
+                        Origin: https://normal-website.com
+                        Cookie: JSESSIONID=<value>
+                    -response
+                        HTTP/1.1 200 OK
+                        ...
+                        Access-Control-Allow-Origin: https://normal-website.com
+                        Access-Control-Allow-Credentials: true
+                            -browser will permit the requesting website to read the response
+                            -Access-Control-Allow-Credentials response header is set to true
+
+SameSite cookie:
+    -used to control whether and how cookies are submitted in cross-site requests
+    -can prevent the default browser behavior of automatically adding cookies to requests regardless of where they originate
+    SameSite=Strict - browser will not include the cookie in any requests that originate from another site
+                    - most defensive option
+                    - can impair the user experience, because if a logged-in user follows a third-party link to a site, then they will appear not to be logged in
+                    - need to log in again before interacting with the site in the normal way
+    SameSite=Lax    - browser will include the cookie in requests that originate from another site but only if two conditions are met:
+                        - request uses the GET method. Requests with other methods, such as POST, will not include the cookie
+                        - request resulted from a top-level navigation by the user, such as clicking a link
+                        - Other requests, such as those initiated by scripts, will not include the cookie
+
+
+
+
+
+

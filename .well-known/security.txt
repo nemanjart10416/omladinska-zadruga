@@ -1,0 +1,19 @@
+# Our security contact
+
+Contact: mailto:nemanja7popovic@gmail.com
+Preferred-Language: en
+Canonical: https://www.example.com/.well-known/security.txt
+Encryption: https://www.example.com/pgp-key.txt
+
+Acknowledgments: https://www.example.com/security-acknowledgments
+
+# Reporting security vulnerabilities
+
+If you have discovered a security vulnerability, please responsibly disclose it by emailing us at security@example.com. Your contribution helps us improve the security of our systems.
+
+Please provide detailed information about the vulnerability, including steps to reproduce it if possible. We appreciate your efforts and will respond to you promptly.
+
+# Disclosure Policy
+
+Please refer to our website for more information about our security disclosure policy:
+https://www.example.com/security-disclosure-policy

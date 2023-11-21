@@ -1,0 +1,29 @@
+user
+    id
+    username
+    email
+    password
+    first name
+    last name
+    birthday
+    address
+    phone
+    role(super_administrator, administrator, employer, user)
+    confirmation_status(not_confirmed, confirmed)
+    available_status(active, inactive, deleted)
+    created_at
+    updated_at
+
+employer_profile => user
+    user_id
+    pib...
+
+employe_profile => user
+    user_id
+    resume
+    education
+    experience...
+
+
+
+

@@ -1,0 +1,23 @@
+## Define the rate limiting rules
+
+## Caching Configuration
+
+## Handling Trailing Slashes:
+# While you have a rule to add trailing slashes, consider the reverse situation: removing trailing slashes from URLs. Choose the approach that best suits your SEO and usability goals.
+
+## Server Signature and Tokens
+# Hide server-related information by turning off server signatures and tokens. This reduces the amount of information available to potential attackers.
+
+# Hide PHP version
+
+# Hide PHP
+
+TODO
+Class Names: Use StudlyCaps for class names. For example: DatabaseConnection.
+Method Names: Use camelCase for method names. For example: getUserName().
+Function Names: Use snake_case for function names. For example: format_date().
+Variable Names: Use snake_case for variable names. For example: $node_title.
+
+
+
+
