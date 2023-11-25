@@ -8,3 +8,4 @@ include_once("Templates.php");
 include_once("Validator.php");
 include_once("model/User.php");
 include_once("model/TokenManager.php");
+include_once("model/PasswordResetTokenManager.php");

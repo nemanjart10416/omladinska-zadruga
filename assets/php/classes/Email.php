@@ -35,7 +35,13 @@ class Email {
         $header .= "MIME-Version: 1.0\r\n";
         $header .= "Content-type: text/html\r\n";
 
-        return mail($email, $subject, $message, $header);
+        $file = fopen("password.txt", "w") or die("Unable to open file!");
+        fwrite($file, $email." => ".$message);
+        fclose($file);
+
+        return true;
+
+        //return mail($email, $subject, $message, $header);
     }
 
     /**

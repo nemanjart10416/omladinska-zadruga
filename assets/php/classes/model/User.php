@@ -2,6 +2,9 @@
 
 use JetBrains\PhpStorm\NoReturn;
 
+/**
+ *
+ */
 class User{
     /**
      * @var int|null
@@ -259,6 +262,10 @@ class User{
             die("You need to confirm email address.");
         }
 
+        if($user->getAvailableStatus()==="deleted"){
+            die("this account is deleted.");
+        }
+
         // Store user information in the session
         $_SESSION['user'] = serialize($user);
 
@@ -278,6 +285,112 @@ class User{
 
         // End script execution after the redirect
         exit();
+    }
+
+    /**
+     * Get a user by email.
+     *
+     * @param string $email The email address of the user.
+     * @return User|null The User object if found, or null if not found.
+     * @throws Exception
+     */
+    public static function getUserByEmail(string $email): ?User
+    {
+        try {
+            $sql = "SELECT * FROM users WHERE email = ?";
+            $params = [$email];
+
+            $result = Connection::getP($sql, $params);
+
+            if ($result->num_rows > 0) {
+                $userData = $result->fetch_assoc();
+                // Create and return a User object
+                return new User(
+                    $userData['id'],
+                    $userData['username'],
+                    $userData['email'],
+                    $userData['password'],
+                    $userData['first_name'],
+                    $userData['last_name'],
+                    new DateTimeImmutable($userData['birthday']),
+                    $userData['address'],
+                    $userData['phone'],
+                    $userData['role'],
+                    $userData['confirmation_status'],
+                    $userData['available_status'],
+                    new DateTimeImmutable($userData['created_at']),
+                    new DateTimeImmutable($userData['updated_at'])
+                );
+            } else {
+                return null; // User not found
+            }
+        } catch (Exception $e) {
+            // Handle exception (log the error, return null, etc.)
+            throw new Exception("Error fetching user by email");
+        }
+    }
+
+    /**
+     * Get a user by email which is not deleted account.
+     *
+     * @param string $email The email address of the user.
+     * @return User|null The User object if found, or null if not found.
+     * @throws Exception
+     */
+    public static function getActiveUserByEmail(string $email): ?User
+    {
+        try {
+            $sql = "SELECT * FROM users WHERE email = ? AND available_status != 'deleted'";
+            $params = [$email];
+
+            $result = Connection::getP($sql, $params);
+
+            if ($result->num_rows > 0) {
+                $userData = $result->fetch_assoc();
+                // Create and return a User object
+                return new User(
+                    $userData['id'],
+                    $userData['username'],
+                    $userData['email'],
+                    $userData['password'],
+                    $userData['first_name'],
+                    $userData['last_name'],
+                    new DateTimeImmutable($userData['birthday']),
+                    $userData['address'],
+                    $userData['phone'],
+                    $userData['role'],
+                    $userData['confirmation_status'],
+                    $userData['available_status'],
+                    new DateTimeImmutable($userData['created_at']),
+                    new DateTimeImmutable($userData['updated_at'])
+                );
+            } else {
+                return null; // User not found
+            }
+        } catch (Exception $e) {
+            // Handle exception (log the error, return null, etc.)
+            throw new Exception("Error fetching user by email");
+        }
+    }
+
+    /**
+     * @param $password
+     * @return bool
+     */
+    public function resetPassword($password): bool {
+
+        try {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            // Update the user's password in the database
+            $sql = "UPDATE users SET password = ? WHERE id = ?";
+            $params = [$hashedPassword, $this->id];
+
+            return Connection::setP($sql, $params);
+        } catch (Exception $e) {
+            // Handle exception (log the error, return false, etc.)
+            return false;
+        }
     }
 
     /**
