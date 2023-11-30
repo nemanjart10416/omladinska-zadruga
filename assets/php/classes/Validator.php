@@ -257,6 +257,24 @@ class Validator {
                     }
                 }
             }
+        } elseif ($ruleName === 'pib_format') {
+            /* PIB Format: Validates that a PIB (Personal Identification Number) consists of only numbers and is 9 digits long. */
+            if (isset($this->data[$field])) {
+                $pib = $this->data[$field];
+
+                if (!ctype_digit($pib) || strlen($pib) !== 9) {
+                    $this->addError($field, 'PIB must consist of 9 digits.');
+                }
+            }
+        } elseif ($ruleName === 'mb_format') {
+            /* MB Format: Validates that a company registration number (MB) consists of only numbers and is 8 digits long. */
+            if (isset($this->data[$field])) {
+                $mb = $this->data[$field];
+
+                if (!ctype_digit($mb) || strlen($mb) !== 8) {
+                    $this->addError($field, 'Company registration number (MB) must consist of 8 digits.');
+                }
+            }
         }
 
         // Add more rule implementations here

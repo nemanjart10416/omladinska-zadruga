@@ -11,19 +11,19 @@ USE `omladinska-zadruga`;
 CREATE TABLE `users`
 (
     `id`                  INT AUTO_INCREMENT PRIMARY KEY,
-    `username`            VARCHAR(255)                                                                  NOT NULL UNIQUE,
-    `email`               VARCHAR(255)                                                                  NOT NULL UNIQUE,
-    `password`            VARCHAR(255)                                                                  NOT NULL,
-    `first_name`          VARCHAR(255)                                                                  NOT NULL,
-    `last_name`           VARCHAR(255)                                                                  NOT NULL,
-    `birthday`            DATE                                                                          NOT NULL,
-    `address`             VARCHAR(255)                                                                  NOT NULL,
-    `phone`               VARCHAR(20)                                                                   NOT NULL,
+    `username`            VARCHAR(255)                                                      NOT NULL UNIQUE,
+    `email`               VARCHAR(255)                                                      NOT NULL UNIQUE,
+    `password`            VARCHAR(255)                                                      NOT NULL,
+    `first_name`          VARCHAR(255)                                                      NOT NULL,
+    `last_name`           VARCHAR(255)                                                      NOT NULL,
+    `birthday`            DATE                                                              NOT NULL,
+    `address`             VARCHAR(255)                                                      NOT NULL,
+    `phone`               VARCHAR(20)                                                       NOT NULL,
     `role`                ENUM ('super_administrator', 'administrator', 'employer', 'user') NOT NULL,
-    `confirmation_status` ENUM ('not_confirmed', 'confirmed')                                           NOT NULL DEFAULT 'not_confirmed',
-    `available_status`    ENUM ('active', 'inactive', 'deleted')                                        NOT NULL DEFAULT 'active',
-    `created_at`          TIMESTAMP                                                                              DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`          TIMESTAMP                                                                              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    `confirmation_status` ENUM ('not_confirmed', 'confirmed')                               NOT NULL DEFAULT 'not_confirmed',
+    `available_status`    ENUM ('active', 'inactive', 'deleted')                            NOT NULL DEFAULT 'active',
+    `created_at`          TIMESTAMP                                                                  DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`          TIMESTAMP                                                                  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Insert sample data into the users table
@@ -54,6 +54,8 @@ CREATE TABLE confirmation_tokens
     user_id         INT,
     token           VARCHAR(255) NOT NULL,
     expiration_date DATETIME     NOT NULL,
+    `created_at`    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
@@ -62,6 +64,36 @@ CREATE TABLE password_reset
     id              INT PRIMARY KEY AUTO_INCREMENT,
     user_email      VARCHAR(255) NOT NULL,
     token           VARCHAR(64)  NOT NULL,
-    expiration_date DATETIME     NOT NULL
+    expiration_date DATETIME     NOT NULL,
+    `created_at`    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE employer_profile
+(
+    employer_profile_id INT PRIMARY KEY AUTO_INCREMENT,
+    employer_user_id    INT UNIQUE NOT NULL,
+    company_title       VARCHAR(255) NOT NULL,
+    company_pib         VARCHAR(20) NOT NULL UNIQUE,
+    company_mb          VARCHAR(20) NOT NULL UNIQUE,
+    company_email       VARCHAR(255) NOT NULL UNIQUE,
+    company_phone       VARCHAR(20) NOT NULL UNIQUE,
+    company_work_field  VARCHAR(255) NOT NULL,
+    company_address     VARCHAR(255) NOT NULL,
+    `created_at`        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (employer_user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE employee_profile
+(
+    employee_profile_id     INT PRIMARY KEY AUTO_INCREMENT,
+    employee_user_id        INT NOT NULL,
+    employment_status       ENUM ('unemployed', 'pupil', 'student', 'other'),
+    employee_id_card_number VARCHAR(20) NOT NULL UNIQUE,
+    employee_mb             VARCHAR(20) NOT NULL UNIQUE,
+    employee_resume         VARCHAR(255),
+    `created_at`            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_user_id) REFERENCES users (id) ON DELETE CASCADE
+);

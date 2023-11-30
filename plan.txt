@@ -15,14 +15,24 @@ user
     updated_at
 
 employer_profile => user
-    user_id
-    pib...
+    employer_profile_id
+    employer_user_id
+    company_title
+    company_pib
+    company_mb (maticni broj)
+    company_email
+    company_phone
+    company_work_field
+    company_address
+
 
 employe_profile => user
-    user_id
-    resume
-    education
-    experience...
+    employe_profile_id
+    employe_user_id
+    employment_status( ENUM: unemployed, pupil, student, other)
+    employe_id_card_number UNIQUE //broj licne karte
+    employe_mb UNIQUE //maticni broj
+    employe_resume OPTIONAL
 
 
 
