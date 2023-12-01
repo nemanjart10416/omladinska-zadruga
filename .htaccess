@@ -5,11 +5,11 @@ RewriteEngine On
 
 ## HTTP to HTTPS
 # Check if X-Forwarded-Proto header is not "https"
-RewriteCond %{HTTP:X-Forwarded-Proto} !https
+#RewriteCond %{HTTP:X-Forwarded-Proto} !https
 # Check if HTTPS is off
-RewriteCond %{HTTPS} off
+#RewriteCond %{HTTPS} off
 # If both conditions are met, redirect to HTTPS version
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 ## Redirect URLs with .php extension to URLs without the extension
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]

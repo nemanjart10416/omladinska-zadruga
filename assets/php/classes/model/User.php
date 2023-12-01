@@ -103,10 +103,10 @@ class User{
         string $address,
         string $phone,
         string $role,
-        ?string $confirmationStatus,
-        ?string $availableStatus,
-        ?DateTimeImmutable $createdAt,
-        ?DateTimeImmutable $updatedAt
+        ?string $confirmationStatus = "not_confirmed",
+        ?string $availableStatus = null,
+        ?DateTimeImmutable $createdAt = null,
+        ?DateTimeImmutable $updatedAt = null
     ) {
         $this->id = $id;
         $this->username = $username;

@@ -294,6 +294,7 @@ class Connection {
             return $success;
         } else {
             // Handle error (return an error message, log, etc.)
+            echo $conn->error;
             return null;
         }
     }

@@ -8,7 +8,8 @@ if(isset($_SESSION["user"])){
 
 $msg = "";
 
-if (isset($_POST["register"])) {
+//if (isset($_POST["register"]) && isset($_POST["username"])) {
+if (Functions::issetValues(["register","username","email","password","first_name","last_name","birthday","address","phone","role"], $_POST)) {
     $username = UserInput::sanitize($_POST["username"]);
     $email = UserInput::sanitize($_POST["email"]);
     $password = UserInput::sanitize($_POST["password"]);
@@ -49,7 +50,7 @@ if (isset($_POST["register"])) {
                 'username' => 'required|min:5|max:20|alpha_numeric', // username only numbers and letters, min 5 max 20, unique
                 'email' => 'required|min:5|max:90|email', // email min 5, max 90, email
                 'password' => 'required|min:8|max:50', // password min 8 max 50
-                'name' => 'required|min:3|max:50|alpha', // name min 3, max 50, only letters
+                'name' => 'required|min:2|max:50|alpha', // name min 3, max 50, only letters
                 'last name' => 'required|min:3|max:50|alpha', // last name min 3, max 50, only letters
                 'birthday' => 'required|date|birthday:18', // birthday, must be date, in the past, at least 18 years old
                 'address' => 'required|min:3|max:50', // address min 3, max 50
@@ -92,8 +93,6 @@ if (isset($_POST["register"])) {
                     }
                 }
             }
-
-
         }
     }
 }
@@ -146,35 +145,35 @@ if (isset($_POST["register"])) {
             <form class="loginForm" method="POST" action="register">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username <span class="required">*</span></label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+                    <input type="text" class="form-control" id="username" name="username">
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address <span class="required">*</span></label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password <span class="required">*</span></label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password" class="form-control" id="password" name="password">
                 </div>
                 <div class="mb-3">
                     <label for="first_name" class="form-label">First Name <span class="required">*</span></label>
-                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    <input type="text" class="form-control" id="first_name" name="first_name">
                 </div>
                 <div class="mb-3">
                     <label for="last_name" class="form-label">Last Name <span class="required">*</span></label>
-                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                    <input type="text" class="form-control" id="last_name" name="last_name">
                 </div>
                 <div class="mb-3">
                     <label for="birthday" class="form-label">Birthday <span class="required">*</span></label>
-                    <input type="date" class="form-control" id="birthday" name="birthday" required>
+                    <input type="date" class="form-control" id="birthday" name="birthday">
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Address <span class="required">*</span></label>
-                    <input type="text" class="form-control" id="address" name="address" required>
+                    <input type="text" class="form-control" id="address" name="address">
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone Number <span class="required">*</span></label>
-                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                    <input type="tel" class="form-control" id="phone" name="phone">
                 </div>
                 <div class="mb-3">
                     <label for="role" class="form-label">register as: <span class="required">*</span></label>

@@ -94,10 +94,9 @@ class EmployerProfile
     /**
      * Create a new employer profile in the database.
      *
-     * @return EmployerProfile|null
-     * @throws Exception
+     * @return bool
      */
-    public function createProfile(): ?EmployerProfile {
+    public function createProfile(): bool {
         $sql = "
             INSERT INTO employer_profile 
                 (employer_user_id, company_title, company_pib, company_mb, company_email, company_phone, company_work_field, company_address, created_at, updated_at)
@@ -109,25 +108,7 @@ class EmployerProfile
         ];
 
         // Execute the prepared statement using setP function
-        $success = Connection::setP($sql, $params);
-
-        if ($success) {
-            // Get the inserted profile's data
-            $getProfileSql = "SELECT * FROM employer_profile WHERE employer_user_id = ?";
-            $getProfileParams = [$this->userId];
-
-            $profileResult = Connection::getP($getProfileSql, $getProfileParams);
-
-            if ($profile = $profileResult->fetch_assoc()) {
-                return new EmployerProfile(
-                    $profile['employer_profile_id'], $profile['employer_user_id'], $profile['company_title'], $profile['company_pib'],
-                    $profile['company_mb'], $profile['company_email'], $profile['company_phone'], $profile['company_work_field'],
-                    $profile['company_address'], new DateTimeImmutable($profile['created_at']), new DateTimeImmutable($profile['updated_at'])
-                );
-            }
-        }
-
-        return null;
+        return Connection::setP($sql, $params);
     }
 
     /**

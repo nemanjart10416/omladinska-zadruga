@@ -257,13 +257,24 @@ class Validator {
                     }
                 }
             }
-        } elseif ($ruleName === 'pib_format') {
+        } elseif ($ruleName === 'pib_format' || $ruleName === 'id_card_num') {
             /* PIB Format: Validates that a PIB (Personal Identification Number) consists of only numbers and is 9 digits long. */
+            /* ID card number: Validates that a card number consists of only numbers and is 9 digits long. */
             if (isset($this->data[$field])) {
                 $pib = $this->data[$field];
 
                 if (!ctype_digit($pib) || strlen($pib) !== 9) {
-                    $this->addError($field, 'PIB must consist of 9 digits.');
+                    $this->addError($field, 'Field must consist of 9 digits.');
+                }
+            }
+        }elseif ($ruleName === 'jmbg_format') {
+            /* PIB Format: Validates that a PIB (Personal Identification Number) consists of only numbers and is 9 digits long. */
+            /* ID card number: Validates that a card number consists of only numbers and is 9 digits long. */
+            if (isset($this->data[$field])) {
+                $pib = $this->data[$field];
+
+                if (!ctype_digit($pib) || strlen($pib) !== 13) {
+                    $this->addError($field, 'Field must consist of 13 digits.');
                 }
             }
         } elseif ($ruleName === 'mb_format') {
@@ -272,7 +283,7 @@ class Validator {
                 $mb = $this->data[$field];
 
                 if (!ctype_digit($mb) || strlen($mb) !== 8) {
-                    $this->addError($field, 'Company registration number (MB) must consist of 8 digits.');
+                    $this->addError($field, 'Field must consist of 8 digits.');
                 }
             }
         }

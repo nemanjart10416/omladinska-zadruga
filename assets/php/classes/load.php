@@ -10,3 +10,4 @@ include_once("model/User.php");
 include_once("model/TokenManager.php");
 include_once("model/PasswordResetTokenManager.php");
 include_once("model/EmployerProfile.php");
+include_once("model/EmployeeProfile.php");

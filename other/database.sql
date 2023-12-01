@@ -90,8 +90,8 @@ CREATE TABLE employee_profile
     employee_profile_id     INT PRIMARY KEY AUTO_INCREMENT,
     employee_user_id        INT NOT NULL,
     employment_status       ENUM ('unemployed', 'pupil', 'student', 'other'),
-    employee_id_card_number VARCHAR(20) NOT NULL UNIQUE,
-    employee_mb             VARCHAR(20) NOT NULL UNIQUE,
+    employee_id_card_number VARCHAR(20) NOT NULL UNIQUE, #broj licne karte
+    employee_mb             VARCHAR(20) NOT NULL UNIQUE, #jmbg
     employee_resume         VARCHAR(255),
     `created_at`            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at`            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
